@@ -1,4 +1,4 @@
-### Hi there 👋
+## Hi there 👋
 
 <!--
 **partha51613/partha51613** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
