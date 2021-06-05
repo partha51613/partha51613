@@ -1,8 +1,11 @@
-## Hi there 👋
+## Hello There 👋👋👋
 
-# Welcome to my Github Page
+  ### Welcome to my Github Profile
 
-
+- :man_student: I am a Student pursuing MCA
+- :computer: Currently working with ReactJs
+- :tv: Love to watch TV Series :popcorn:
+- :mailbox: Reach me on me@partha51613.com
 
 
 
