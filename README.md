@@ -8,7 +8,7 @@
 - :mailbox: Reach me on me@partha51613.com
 
 
-[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=partha51613&theme=dark&background=000000)]
+![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=partha51613&theme=dark&background=000000)]
 
 
 
