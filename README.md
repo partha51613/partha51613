@@ -2,7 +2,7 @@
 
   ### Welcome to my Github Profile
 
-- :man_student: I am a Associate Software Engineer in Zaloni.
+- :man_student: I am a Software Engineer in Zaloni.
 - :computer: Currently working with Hadoop, Arena, Hive and other big data technologies.
 - :tv: Love to watch TV Series :popcorn:
 - :mailbox: Reach me on me@partha51613.com
