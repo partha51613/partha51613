@@ -1,7 +1,7 @@
 ## Hello There 👋👋👋
 
   ### Welcome to my Github Profile
-- **LOOKING FOR A NEW ROLE, REACH OUT TO ME IF YOU HAVE ANY OPPORTUNITIES FOR ME**
+- **LOOKING FOR A NEW ROLE, REACH OUT IF YOU HAVE ANY OPPORTUNITIES FOR ME**
 - :man_student: Software Engineer | Ex: Zaloni
 - :computer: Currently working with Hadoop, Arena, Hive and other big data technologies.
 - :mailbox: Reach me on me@partha51613.com
