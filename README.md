@@ -4,8 +4,7 @@
 - **LOOKING FOR A NEW ROLE, REACH OUT IF YOU HAVE ANY OPPORTUNITIES FOR ME**
 - :man_student: Software Engineer | Ex: Zaloni
 - :computer: Currently working with Hadoop, Arena, Hive and other big data technologies.
-- :page_facing_up: Resume: [https://shorturl.at/iDHY8](https://shorturl.at/iDHY8)
-- :mailbox: Reach me on me@partha51613.com
+- :mailbox: Reach me on me[at]partha51613.com
 ***
 
 ***
