@@ -3,7 +3,7 @@
   ### Welcome to my Github Profile
 - **LOOKING FOR A NEW ROLE, REACH OUT IF YOU HAVE ANY OPPORTUNITIES FOR ME**
 - :man_student: Software Engineer | Ex: Zaloni
-- :computer: Currently working with Hadoop, Arena, Hive and other big data technologies.
+- :computer: Currently working with Android Studio.
 - :mailbox: Reach me on me[at]partha51613.com
 ***
 
