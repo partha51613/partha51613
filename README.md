@@ -1,9 +1,9 @@
 ## Hello There 👋👋👋
 
-  ### Welcome to my Github Profile
-- **LOOKING FOR A NEW ROLE, REACH OUT IF YOU HAVE ANY OPPORTUNITIES FOR ME**
-- :man_student: Software Engineer | Ex: Zaloni
-- :computer: Currently working with Android Studio.
+  ### **LOOKING FOR A NEW ROLE, REACH OUT IF YOU HAVE ANY OPPORTUNITIES FOR ME**
+
+- :man_student: Currently working as System Engineer at Indian Institute of Technology Guwahati (IITG) | Ex: Zaloni
+- :computer: Currently working RHEL, PHP, etc
 - :mailbox: Reach me on me[at]partha51613.com
 ***
 
