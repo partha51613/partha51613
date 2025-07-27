@@ -4,9 +4,8 @@
 
 Hi there! I'm **Partha Choudhury**, a passionate **System Engineer** based in **Assam, India**.  
 
-- 🌱 Currently learning **Angular**  
 - 💼 Working at **IIT Guwahati**  
-- 🔭 Exploring **AWS**  
+- 🔭 Exploring **AWS & Terraform**  
 ---
 
 ## 🛠️ My Skills
