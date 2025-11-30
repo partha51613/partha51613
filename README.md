@@ -2,10 +2,10 @@
 
 ## About Me 🌟
 
-Hi there! I'm **Partha Choudhury**, a passionate **System Engineer** based in **Assam, India**.  
+Hi there! I'm **Partha Choudhury**, a passionate **Assistant Project Engineer** based in **Assam, India**.  
 
 - 💼 Working at **IIT Guwahati**  
-- 🔭 Exploring **AWS & Terraform**  
+- 🔭 Exploring **Java**
 ---
 
 ## 🛠️ My Skills
@@ -32,3 +32,4 @@ Hi there! I'm **Partha Choudhury**, a passionate **System Engineer** based in **
 ---
 
 ⭐️ *Feel free to explore my repositories and drop a star if you find something interesting!*  
+
