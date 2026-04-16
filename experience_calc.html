@@ -1,0 +1,281 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Experience Calculator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .card { border-radius: 12px; border: none; }
+    .entry-card { transition: all 0.3s ease; border-left: 5px solid #dee2e6; }
+    .entry-card:focus-within { border-left-color: #0d6efd; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .is-invalid-range { border-left-color: #dc3545 !important; background-color: #fff8f8; }
+    .is-overlap { border-left-color: #ffc107 !important; }
+    .total-display { background: linear-gradient(135deg, #0d6efd, #0b5ed7); color: white; }
+    .btn-fab { position: fixed; bottom: 30px; right: 30px; border-radius: 50px; padding: 12px 24px; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); }
+    .duration-badge { font-size: 0.75rem; background: #e9ecef; color: #495057; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="container py-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-11">
+      
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark m-0">Experience Calculator</h2>
+        <div class="d-flex gap-2">
+            <button class="btn btn-success shadow-sm" onclick="saveJSON()">Save JSON</button>
+            <button class="btn btn-secondary shadow-sm" onclick="document.getElementById('loadFile').click()">Load</button>
+            <input type="file" id="loadFile" hidden accept=".json" onchange="loadJSON(event)">
+        </div>
+      </div>
+
+      <div id="entries"></div>
+
+      <button class="btn btn-primary btn-fab" onclick="addEntry()">Add Position</button>
+
+      <div class="card shadow-lg mt-4 total-display">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-uppercase mb-1 fw-bold style" style="opacity: 0.8; font-size: 0.75rem;">Consolidated Industry Experience</p>
+            <h1 class="display-5 fw-bold m-0" id="totalExp">0 days</h1>
+          </div>
+          <button class="btn btn-light text-primary fw-bold" onclick="clearAll()">Clear All</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let entries = JSON.parse(localStorage.getItem('exp_data')) || [];
+const today = new Date().toISOString().split('T')[0];
+
+function saveToLocal() {
+    localStorage.setItem('exp_data', JSON.stringify(entries));
+}
+
+function addEntry(data = {}) {
+  const id = (Date.now() + Math.random()).toString();
+  
+  // Improvement: Auto-fill start date based on last entry's end date
+  let defaultStart = '';
+  if (entries.length > 0 && !data.start) {
+      const lastEntry = entries[entries.length - 1];
+      if (lastEntry.end) defaultStart = lastEntry.end;
+  }
+
+  entries.push({
+    id,
+    org: data.org || '',
+    role: data.role || '',
+    start: data.start || defaultStart,
+    end: data.end || '',
+    present: data.present || false
+  });
+  render();
+}
+
+function deleteEntry(id) {
+  if(confirm("Remove this entry?")) {
+    entries = entries.filter(e => e.id !== id);
+    render();
+  }
+}
+
+function clearAll() {
+    if(confirm("Clear everything?")) {
+        entries = [];
+        addEntry();
+    }
+}
+
+function updateEntry(id, field, value) {
+  const entry = entries.find(e => e.id === id);
+  if (!entry) return;
+
+  entry[field] = value;
+  if (field === 'present' && value === true) {
+    entry.end = today;
+  }
+
+  saveToLocal();
+  render();
+}
+
+function syncData(id, field, value) {
+  const entry = entries.find(e => e.id === id);
+  if (entry) {
+      entry[field] = value;
+      saveToLocal();
+      calculate(); 
+  }
+}
+
+// Helper to calculate string for a single card
+function getSingleDuration(startStr, endStr, isPresent) {
+    if (!startStr || (!endStr && !isPresent)) return '';
+    const s = new Date(startStr);
+    const e = isPresent ? new Date() : new Date(endStr);
+    if (isNaN(s) || isNaN(e) || s > e) return '';
+    
+    const diff = ((e - s) / (1000 * 60 * 60 * 24)) + 1;
+    const y = Math.floor(diff / 365.25);
+    const m = Math.floor((diff % 365.25) / 30.44);
+    return `${y > 0 ? y + 'y ' : ''}${m > 0 ? m + 'm' : (y === 0 ? Math.floor(diff) + 'd' : '')}`;
+}
+
+function render() {
+  const container = document.getElementById('entries');
+  
+  // Pre-calculate overlaps for visual feedback
+  const sorted = [...entries]
+    .filter(e => e.start && (e.end || e.present))
+    .sort((a,b) => new Date(a.start) - new Date(b.start));
+  
+  const overlapIds = new Set();
+  for(let i = 0; i < sorted.length - 1; i++) {
+      const currentEnd = sorted[i].present ? new Date() : new Date(sorted[i].end);
+      const nextStart = new Date(sorted[i+1].start);
+      if (currentEnd > nextStart) {
+          overlapIds.add(sorted[i].id);
+          overlapIds.add(sorted[i+1].id);
+      }
+  }
+
+  const html = entries.map(e => {
+    const isInvalid = e.start && e.end && new Date(e.start) > new Date(e.end);
+    const hasOverlap = overlapIds.has(e.id);
+    const cardDuration = getSingleDuration(e.start, e.end, e.present);
+    
+    return `
+    <div class="card entry-card border mb-3 p-3 bg-white ${isInvalid ? 'is-invalid-range' : ''} ${hasOverlap && !isInvalid ? 'is-overlap' : ''}">
+      <div class="d-flex justify-content-between mb-2">
+        <span class="duration-badge">${cardDuration || 'Pending dates'}</span>
+        ${hasOverlap && !isInvalid ? '<span class="badge bg-warning text-dark">Overlap</span>' : ''}
+      </div>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="small fw-bold text-muted">Organization</label>
+          <input class="form-control" placeholder="Company Name" value="${e.org}" 
+            oninput="syncData('${e.id}','org',this.value)" 
+            onkeydown="if(event.key==='Enter') addEntry()">
+        </div>
+        <div class="col-md-3">
+          <label class="small fw-bold text-muted">Role</label>
+          <input class="form-control" placeholder="Job Title" value="${e.role}" 
+            oninput="syncData('${e.id}','role',this.value)">
+        </div>
+        <div class="col-md-2">
+          <label class="small fw-bold text-muted">Start Date</label>
+          <input type="date" class="form-control" value="${e.start}" max="${today}"
+            onchange="updateEntry('${e.id}','start',this.value)">
+        </div>
+        <div class="col-md-2">
+          <label class="small fw-bold text-muted">End Date</label>
+          <input type="date" class="form-control" ${e.present ? 'disabled' : ''} value="${e.end}" max="${today}"
+            onchange="updateEntry('${e.id}','end',this.value)">
+        </div>
+        <div class="col-md-1 mb-2">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="sw-${e.id}" ${e.present ? 'checked' : ''} 
+              onchange="updateEntry('${e.id}','present',this.checked)">
+            <label class="form-check-label small" for="sw-${e.id}">Current</label>
+          </div>
+        </div>
+        <div class="col-md-1 text-end">
+          <button class="btn btn-link text-danger p-0" onclick="deleteEntry('${e.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      ${isInvalid ? '<div class="text-danger small mt-2">Error: End date cannot be before start date.</div>' : ''}
+    </div>
+  `}).join('');
+
+  container.innerHTML = html || '<div class="text-center p-5 border rounded bg-white">No positions added. Click the button to start.</div>';
+  calculate();
+}
+
+function calculate() {
+  let ranges = [];
+
+  entries.forEach(e => {
+    if (!e.start) return;
+    let start = new Date(e.start);
+    let end = e.present ? new Date() : new Date(e.end);
+    
+    if (isNaN(start) || isNaN(end) || start > end) return;
+    ranges.push([start, end]);
+  });
+
+  if (ranges.length === 0) {
+    document.getElementById('totalExp').innerText = "0 days";
+    return;
+  }
+
+  ranges.sort((a, b) => a[0] - b[0]);
+  let merged = [];
+  ranges.forEach(r => {
+    if (!merged.length || r[0] > merged[merged.length - 1][1]) {
+      merged.push(r);
+    } else {
+      merged[merged.length - 1][1] = new Date(Math.max(merged[merged.length - 1][1], r[1]));
+    }
+  });
+
+  let totalDays = 0;
+  merged.forEach(r => {
+    totalDays += ((r[1] - r[0]) / (1000 * 60 * 60 * 24)) + 1;
+  });
+
+  const years = Math.floor(totalDays / 365.25);
+  const months = Math.floor((totalDays % 365.25) / 30.44);
+  const days = Math.floor((totalDays % 365.25) % 30.44);
+
+  let output = [];
+  if (years > 0) output.push(`${years}y`);
+  if (months > 0) output.push(`${months}m`);
+  output.push(`${days}d`);
+
+  document.getElementById('totalExp').innerText = output.join(' ');
+}
+
+function saveJSON() {
+  const data = JSON.stringify({ experiences: entries }, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Experience_Backup_${today}.json`;
+  a.click();
+}
+
+function loadJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      entries = data.experiences || [];
+      saveToLocal();
+      render();
+    } catch (err) { alert("Invalid file format."); }
+  };
+  reader.readAsText(file);
+}
+
+if (entries.length === 0) addEntry();
+else render();
+</script>
+
+</body>
+</html>
