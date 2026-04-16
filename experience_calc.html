@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +13,12 @@
     .is-invalid-range { border-left-color: #dc3545 !important; background-color: #fff8f8; }
     .is-overlap { border-left-color: #ffc107 !important; }
     .total-display { background: linear-gradient(135deg, #0d6efd, #0b5ed7); color: white; }
-    .btn-fab { position: fixed; bottom: 30px; right: 30px; border-radius: 50px; padding: 12px 24px; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); }
+    .btn-fab { position: fixed; bottom: 30px; right: 30px; border-radius: 50px; padding: 12px 24px; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4); z-index: 1000; }
     .duration-badge { font-size: 0.75rem; background: #e9ecef; color: #495057; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+    
+    /* Toggle Button Styling */
+    .view-toggle .btn-check:checked + .btn { background-color: rgba(255,255,255,0.2); border-color: white; color: white; }
+    .view-toggle .btn { border-color: rgba(255,255,255,0.5); color: rgba(255,255,255,0.8); font-size: 0.8rem; }
   </style>
 </head>
 <body>
@@ -38,12 +41,25 @@
       <button class="btn btn-primary btn-fab" onclick="addEntry()">Add Position</button>
 
       <div class="card shadow-lg mt-4 total-display">
-        <div class="card-body p-4 d-flex justify-content-between align-items-center">
-          <div>
-            <p class="text-uppercase mb-1 fw-bold style" style="opacity: 0.8; font-size: 0.75rem;">Consolidated Industry Experience</p>
-            <h1 class="display-5 fw-bold m-0" id="totalExp">0 days</h1>
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class="text-uppercase mb-1 fw-bold" style="opacity: 0.8; font-size: 0.75rem;">Consolidated Industry Experience</p>
+              <h1 class="display-5 fw-bold m-0" id="totalExp">0 days</h1>
+            </div>
+            
+            <div class="text-end">
+                <div class="btn-group view-toggle mb-3" role="group" aria-label="View toggle">
+                    <input type="radio" class="btn-check" name="viewMode" id="viewDetailed" autocomplete="off" checked onchange="calculate()">
+                    <label class="btn btn-outline-light" for="viewDetailed">Y/M/D</label>
+                  
+                    <input type="radio" class="btn-check" name="viewMode" id="viewDays" autocomplete="off" onchange="calculate()">
+                    <label class="btn btn-outline-light" for="viewDays">Total Days</label>
+                </div>
+                <br>
+                <button class="btn btn-light text-primary fw-bold" onclick="clearAll()">Clear All</button>
+            </div>
           </div>
-          <button class="btn btn-light text-primary fw-bold" onclick="clearAll()">Clear All</button>
         </div>
       </div>
 
@@ -62,7 +78,6 @@ function saveToLocal() {
 function addEntry(data = {}) {
   const id = (Date.now() + Math.random()).toString();
   
-  // Improvement: Auto-fill start date based on last entry's end date
   let defaultStart = '';
   if (entries.length > 0 && !data.start) {
       const lastEntry = entries[entries.length - 1];
@@ -116,7 +131,6 @@ function syncData(id, field, value) {
   }
 }
 
-// Helper to calculate string for a single card
 function getSingleDuration(startStr, endStr, isPresent) {
     if (!startStr || (!endStr && !isPresent)) return '';
     const s = new Date(startStr);
@@ -132,7 +146,6 @@ function getSingleDuration(startStr, endStr, isPresent) {
 function render() {
   const container = document.getElementById('entries');
   
-  // Pre-calculate overlaps for visual feedback
   const sorted = [...entries]
     .filter(e => e.start && (e.end || e.present))
     .sort((a,b) => new Date(a.start) - new Date(b.start));
@@ -236,16 +249,21 @@ function calculate() {
     totalDays += ((r[1] - r[0]) / (1000 * 60 * 60 * 24)) + 1;
   });
 
-  const years = Math.floor(totalDays / 365.25);
-  const months = Math.floor((totalDays % 365.25) / 30.44);
-  const days = Math.floor((totalDays % 365.25) % 30.44);
+  const isDaysOnly = document.getElementById('viewDays').checked;
+  
+  if (isDaysOnly) {
+      document.getElementById('totalExp').innerText = Math.floor(totalDays) + " days";
+  } else {
+      const years = Math.floor(totalDays / 365.25);
+      const months = Math.floor((totalDays % 365.25) / 30.44);
+      const days = Math.floor((totalDays % 365.25) % 30.44);
 
-  let output = [];
-  if (years > 0) output.push(`${years}y`);
-  if (months > 0) output.push(`${months}m`);
-  output.push(`${days}d`);
-
-  document.getElementById('totalExp').innerText = output.join(' ');
+      let output = [];
+      if (years > 0) output.push(`${years}y`);
+      if (months > 0) output.push(`${months}m`);
+      output.push(`${days}d`);
+      document.getElementById('totalExp').innerText = output.join(' ');
+  }
 }
 
 function saveJSON() {
