@@ -5,7 +5,7 @@
 Hi there! I'm **Partha Choudhury**, **System Engineer** based in **Assam, India**.  
 
 - 💼 Working at **IIT Guwahati**  
-- 🔭 Exploring **Java, NdeJS, Angular, SpringBoot**
+- 🔭 Exploring **Java, NodeJS, Angular, SpringBoot**
 ---
 
 ## 🛠️ My Skills
