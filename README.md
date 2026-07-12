@@ -2,10 +2,10 @@
 
 ## About Me 🌟
 
-Hi there! I'm **Partha Choudhury**, a passionate **Assistant Project Engineer** based in **Assam, India**.  
+Hi there! I'm **Partha Choudhury**, **System Engineer** based in **Assam, India**.  
 
 - 💼 Working at **IIT Guwahati**  
-- 🔭 Exploring **Java**
+- 🔭 Exploring **Java, NdeJS, Angular, SpringBoot**
 ---
 
 ## 🛠️ My Skills
